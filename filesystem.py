@@ -41,3 +41,35 @@ def countBytes(path):
     except PermissionError:
         pass
     return counter
+
+
+def countFiles(path):
+    counter = 0
+    _list_ = os.listdir(path)
+    try:
+        for i in _list_:
+            if os.path.isfile(os.path.join(path, i)):
+                counter += 1
+            elif os.path.isdir(os.path.join(path, i)):
+                counter += 1
+                counter += countFiles(os.path.join(path, i))
+    except PermissionError:
+        pass
+    return counter
+
+
+def findFiles(target, path):
+    new_list = []
+    _list_ = os.listdir(path)
+    try:
+        for i in _list_:
+            if target in i and os.path.isdir(os.path.join(path, i)):
+                new_list.append(os.path.join(path, i))
+                new_list.append(findFiles(target, os.path.join(path, i)))
+            elif target not in i and os.path.isdir(os.path.join(path, i)):
+                new_list.append(findFiles(target, os.path.join(path, i)))
+            elif target in i and os.path.isfile(os.path.join(path, i)):
+                new_list.append(os.path.join(path, i))
+    except PermissionError:
+        pass
+    return new_list
